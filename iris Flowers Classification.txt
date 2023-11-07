@@ -1,0 +1,44 @@
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Create a DataFrame for the dataset
+iris_df = pd.DataFrame(data=np.c_[iris['data'], iris['target']], columns=iris['feature_names'] + ['target'])
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Initialize and train a K-Nearest Neighbors (KNN) classifier
+k = 3  # You can choose the value of k
+knn = KNeighborsClassifier(n_neighbors=k)
+knn.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = knn.predict(X_test)
+
+# Evaluate the model's performance
+confusion = confusion_matrix(y_test, y_pred)
+report = classification_report(y_test, y_pred, target_names=iris.target_names)
+
+# Display the results
+print("Confusion Matrix:")
+print(confusion)
+print("\nClassification Report:")
+print(report)
+
+# Visualize the results
+plt.scatter(iris_df['sepal length (cm)'], iris_df['sepal width (cm)'], c=iris.target)
+plt.xlabel("Sepal Length (cm)")
+plt.ylabel("Sepal Width (cm)")
+plt.title("Iris Sepal Length vs. Sepal Width")
+plt.show()
